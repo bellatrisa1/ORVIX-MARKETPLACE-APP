@@ -1,7 +1,4 @@
-<div align="center">
-  <img src="public/ORVIX-LOGO.png" alt="Orvix Logo" width="280" />
-  
-  # 🛍️ Orvix — Современный маркетплейс
+# 🛍️ Orvix — Современный маркетплейс
   
   ![Next.js](https://img.shields.io/badge/Next.js-16.1-black?logo=next.js&logoColor=white)
   ![React](https://img.shields.io/badge/React-19.2-blue?logo=react&logoColor=white)
