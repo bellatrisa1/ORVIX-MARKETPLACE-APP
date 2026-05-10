@@ -11,22 +11,10 @@
   ![Sass](https://img.shields.io/badge/Sass-1.98-pink?logo=sass&logoColor=white)
   ![Vitest](https://img.shields.io/badge/Vitest-4.1-green?logo=vitest&logoColor=white)
   ![License](https://img.shields.io/badge/License-MIT-yellow)
-  
-  **Полнофункциональный маркетплейс с корзиной, избранным, авторизацией и оформлением заказа**
-  
-  [Демо](#-демо) · [Функции](#-функции) · [Стек](#-технологический-стек) · [Установка](#-установка-и-запуск) · [Тесты](#-тестирование)
-</div>
 
 ---
-
-## 📸 Скриншоты
-
-<div align="center">
-  <img src="https://via.placeholder.com/800x450/3a2bcf/ffffff?text=Orvix+Home+Page" alt="Home Page" width="400" />
-  <img src="https://via.placeholder.com/800x450/6c45ff/ffffff?text=Orvix+Product+Page" alt="Product Page" width="400" />
-  <img src="https://via.placeholder.com/800x450/ff4d6d/ffffff?text=Orvix+Cart" alt="Cart" width="400" />
-  <img src="https://via.placeholder.com/800x450/1f9d55/ffffff?text=Orvix+Checkout" alt="Checkout" width="400" />
-</div>
+  
+### 📸 Демо: https://orvix-marketplace-app.vercel.app/
 
 ---
 
@@ -142,7 +130,7 @@ src/
 
 ```bash
 # Клонировать репозиторий
-git clone https://github.com/your-username/orvix.git
+git clone https://github.com/bellatrisa1/ORBIS-B2B-CRM.git
 cd orvix
 
 # Установить зависимости
