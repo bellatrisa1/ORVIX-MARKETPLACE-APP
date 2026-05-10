@@ -74,52 +74,6 @@
 
 ---
 
-## 📁 Структура проекта
-
-```
-src/
-├── app/                    # Next.js App Router
-│   ├── cart/               # 🛒 Корзина
-│   ├── checkout/           # 📦 Оформление заказа
-│   ├── favorites/          # ❤️ Избранное
-│   ├── profile/            # 👤 Личный кабинет
-│   ├── product/[id]/       # 📱 Страница товара
-│   ├── ideas/              # 💡 Идеи
-│   ├── sales/              # 🔥 Скидки
-│   ├── services/           # 🛠 Услуги
-│   ├── support/            # 🎧 Поддержка
-│   ├── gift-cards/         # 🎁 Подарочные карты
-│   ├── business/           # 🏢 Для бизнеса
-│   ├── mobile/             # 📱 Мобильное приложение
-│   ├── globals.scss        # 🎨 Все стили в одном файле
-│   └── layout.tsx          # 📐 Корневой layout
-├── components/             # 🧩 React-компоненты
-│   ├── Header.tsx          # Шапка с навигацией
-│   ├── TopBar.tsx          # Верхняя панель
-│   ├── Footer.tsx          # Подвал
-│   ├── Hero.tsx            # Слайдер на главной
-│   ├── CatalogMenu.tsx     # Мега-меню каталога
-│   ├── CategoriesGrid.tsx  # Сетка товаров
-│   ├── Chips.tsx           # Чипсы фильтров
-│   ├── SearchBar.tsx       # Поисковая строка
-│   ├── HomePage.tsx        # Главная страница
-│   ├── ProductPageClient.tsx # Страница товара
-│   └── CityModal.tsx       # Модалка выбора города
-├── lib/                    # 🔧 Утилиты
-│   └── products.ts         # Загрузка товаров
-├── types/                  # 📝 TypeScript-типы
-│   ├── api.ts              # Типы API
-│   └── user.ts             # Типы пользователя
-├── data/                   # 💾 Данные
-│   └── user.json           # Демо-пользователь
-├── test/                   # 🧪 Тесты
-│   ├── setup.ts            # Конфигурация Vitest
-│   └── store.test.ts       # Тесты стора (20 тестов)
-└── store.ts                # 🗄️ Zustand-стор
-```
-
----
-
 ## 🚀 Установка и запуск
 
 ### 📋 Требования
