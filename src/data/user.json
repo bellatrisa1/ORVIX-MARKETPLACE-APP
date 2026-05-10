@@ -1,0 +1,27 @@
+{
+  "email": "demo@orvix.com",
+  "password": "demo123",
+  "name": "Анна",
+  "avatar": null,
+  "phone": "+7 (812) 555-89-72",
+  "city": "Санкт-Петербург",
+  "orders": [
+    {
+      "id": "ord-001",
+      "date": "2026-05-01",
+      "total": 23499,
+      "status": "Доставлен",
+      "items": [
+        { "title": "iPhone 13", "quantity": 1, "price": 21999 },
+        { "title": "Чехол силиконовый", "quantity": 1, "price": 1500 }
+      ]
+    },
+    {
+      "id": "ord-002",
+      "date": "2026-04-18",
+      "total": 5490,
+      "status": "В обработке",
+      "items": [{ "title": "Наушники AirPods", "quantity": 1, "price": 5490 }]
+    }
+  ]
+}

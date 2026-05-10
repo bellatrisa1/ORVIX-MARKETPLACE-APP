@@ -1,11 +1,13 @@
-"use client";
+'use client';
 
-import Link from "next/link";
-import Header from "@/components/Header";
-import TopBar from "@/components/TopBar";
-import Footer from "@/components/Footer";
-import { useStore } from "@/store";
-import Image from "next/image";
+import Link from 'next/link';
+import Header from '@/components/Header';
+import TopBar from '@/components/TopBar';
+import Footer from '@/components/Footer';
+import { useStore } from '@/store';
+import Image from 'next/image';
+import { useQuery } from '@tanstack/react-query';
+import { getProducts } from '@/lib/products';
 
 export default function FavoritesPage() {
   const favoriteIds = useStore((state) => state.favoriteIds);
@@ -13,7 +15,10 @@ export default function FavoritesPage() {
   const cartItems = useStore((state) => state.cartItems);
   const addToCart = useStore((state) => state.addToCart);
 
-  const products = useStore((state) => state.cartItems);
+  const { data: products = [] } = useQuery({
+    queryKey: ['marketplace-products'],
+    queryFn: getProducts,
+  });
 
   const favorites = products.filter((p) => favoriteIds.includes(p.id));
 

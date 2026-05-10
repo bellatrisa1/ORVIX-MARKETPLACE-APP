@@ -1,17 +1,17 @@
-"use client";
+'use client';
 
-import Image from "next/image";
-import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
-import { useStore } from "@/store";
-import CatalogMenu from "./CatalogMenu";
+import Image from 'next/image';
+import Link from 'next/link';
+import { useEffect, useRef, useState } from 'react';
+import { useStore } from '@/store';
+import CatalogMenu from './CatalogMenu';
 
 export default function Header() {
   const cartItemsCount = useStore((state) => state.getCartItemsCount());
   const favoriteItems = useStore((state) => state.favoriteIds);
 
   const [isCatalogOpen, setIsCatalogOpen] = useState(false);
-  const [activeCategory, setActiveCategory] = useState("Электроника");
+  const [activeCategory, setActiveCategory] = useState('Электроника');
 
   const headerRef = useRef<HTMLDivElement | null>(null);
 
@@ -26,17 +26,17 @@ export default function Header() {
     };
 
     const handleEscape = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
+      if (event.key === 'Escape') {
         setIsCatalogOpen(false);
       }
     };
 
-    document.addEventListener("mousedown", handleClickOutside);
-    document.addEventListener("keydown", handleEscape);
+    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener('keydown', handleEscape);
 
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-      document.removeEventListener("keydown", handleEscape);
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('keydown', handleEscape);
     };
   }, []);
 
@@ -56,7 +56,7 @@ export default function Header() {
           </Link>
 
           <button
-            className={`catalog-btn ${isCatalogOpen ? "catalog-btn--active" : ""}`}
+            className={`catalog-btn ${isCatalogOpen ? 'catalog-btn--active' : ''}`}
             type="button"
             onClick={() => setIsCatalogOpen((prev) => !prev)}
           >
@@ -70,9 +70,9 @@ export default function Header() {
 
           <nav className="header__nav">
             <Link href="/">Главная</Link>
-            <a href="#">Идеи</a>
-            <a href="#">Скидки</a>
-            <a href="#">Услуги</a>
+            <Link href="/ideas">Идеи</Link>
+            <Link href="/sales">Скидки</Link>
+            <Link href="/services">Услуги</Link>
           </nav>
 
           <div className="header__actions">
@@ -82,10 +82,10 @@ export default function Header() {
               <span className="badge">{favoriteItems.length}</span>
             </Link>
 
-            <button className="action-btn" type="button">
+            <Link className="action-btn" href="/profile">
               <span className="action-btn__icon">◯</span>
               <span className="action-btn__text">Профиль</span>
-            </button>
+            </Link>
 
             <Link className="action-btn" href="/cart">
               <span className="action-btn__icon">🛒</span>

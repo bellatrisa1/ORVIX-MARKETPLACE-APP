@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import Link from "next/link";
-import Header from "@/components/Header";
-import TopBar from "@/components/TopBar";
-import Footer from "@/components/Footer";
-import { useStore } from "@/store";
+import Link from 'next/link';
+import Header from '@/components/Header';
+import TopBar from '@/components/TopBar';
+import Footer from '@/components/Footer';
+import { useStore } from '@/store';
 
 export default function CartPage() {
   const cartItems = useStore((state) => state.cartItems);
@@ -140,9 +140,17 @@ export default function CartPage() {
                     <span>${totalPrice.toFixed(2)}</span>
                   </div>
 
-                  <button className="cart-summary__button" type="button">
+                  <Link
+                    href="/checkout"
+                    className="cart-summary__button"
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}
+                  >
                     Оформить заказ
-                  </button>
+                  </Link>
 
                   <p className="cart-summary__note">
                     Это демо-корзина. Заказ не отправляется на сервер.
