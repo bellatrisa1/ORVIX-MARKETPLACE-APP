@@ -1,166 +1,276 @@
-# ORVIX Marketplace
-
-ORVIX is a modern marketplace-style web application inspired by platforms like Ozon and Amazon.
-The project demonstrates a scalable frontend architecture built with **Next.js, TypeScript, Zustand, and React Query**.
-
-The application includes a product catalog, product pages, categories, favorites, and a shopping cart.
-Data is fetched from the **DummyJSON API** and managed using modern state management patterns.
-
----
-
-DEMO: https://marketplace-app-taupe-seven.vercel.app/
-
-## Tech Stack
-
-* **Next.js 16**
-* **React 19**
-* **TypeScript**
-* **Zustand** – global state management
-* **Zustand Persist** – localStorage persistence
-* **React Query** – server state management
-* **SCSS (Sass)** – styling
-* **DummyJSON API** – product data source
+<div align="center">
+  <img src="public/ORVIX-LOGO.png" alt="Orvix Logo" width="280" />
+  
+  # 🛍️ Orvix — Современный маркетплейс
+  
+  ![Next.js](https://img.shields.io/badge/Next.js-16.1-black?logo=next.js&logoColor=white)
+  ![React](https://img.shields.io/badge/React-19.2-blue?logo=react&logoColor=white)
+  ![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue?logo=typescript&logoColor=white)
+  ![Zustand](https://img.shields.io/badge/Zustand-5.0-purple?logo=zustand&logoColor=white)
+  ![TanStack Query](https://img.shields.io/badge/TanStack_Query-5.90-red?logo=react-query&logoColor=white)
+  ![Sass](https://img.shields.io/badge/Sass-1.98-pink?logo=sass&logoColor=white)
+  ![Vitest](https://img.shields.io/badge/Vitest-4.1-green?logo=vitest&logoColor=white)
+  ![License](https://img.shields.io/badge/License-MIT-yellow)
+  
+  **Полнофункциональный маркетплейс с корзиной, избранным, авторизацией и оформлением заказа**
+  
+  [Демо](#-демо) · [Функции](#-функции) · [Стек](#-технологический-стек) · [Установка](#-установка-и-запуск) · [Тесты](#-тестирование)
+</div>
 
 ---
 
-## Features
+## 📸 Скриншоты
 
-### Product Catalog
-
-* Grid layout with product cards
-* Discount display
-* Product availability
-* Responsive design
-
-### Product Page
-
-* Image gallery
-* Product details
-* Price and discount information
-* Add to cart
-* Add to favorites
-* Related products
-
-### Categories
-
-* Category navigation
-* Dynamic category pages
-
-### Shopping Cart
-
-* Add/remove items
-* Increase/decrease quantity
-* Total price calculation
-
-### Favorites
-
-* Save products to favorites
-* Persistent favorites list
-
-### State Persistence
-
-Cart and favorites are stored in **localStorage** using Zustand persist middleware, so the data remains after page reload.
+<div align="center">
+  <img src="https://via.placeholder.com/800x450/3a2bcf/ffffff?text=Orvix+Home+Page" alt="Home Page" width="400" />
+  <img src="https://via.placeholder.com/800x450/6c45ff/ffffff?text=Orvix+Product+Page" alt="Product Page" width="400" />
+  <img src="https://via.placeholder.com/800x450/ff4d6d/ffffff?text=Orvix+Cart" alt="Cart" width="400" />
+  <img src="https://via.placeholder.com/800x450/1f9d55/ffffff?text=Orvix+Checkout" alt="Checkout" width="400" />
+</div>
 
 ---
 
-## Project Structure
+## ✨ Функции
+
+### 🏠 Главная страница
+- 🔍 **Поиск** товаров в реальном времени
+- 🏷️ **Фильтры** по категориям (Смартфоны, Ноутбуки, Одежда...)
+- 🔥 **Сортировка** (Скидки, Дешевле, Дороже)
+- 🎨 **Hero-слайдер** с анимированными карточками
+- 📦 **Сетка товаров** со скелетонами при загрузке
+
+### 🛒 Корзина
+- ➕ Добавление / ➖ удаление товаров
+- 🔢 Изменение количества (кнопки ±)
+- 🗑️ Очистка корзины
+- 💰 Автоматический подсчёт итоговой суммы
+- 💾 Сохранение в `localStorage`
+
+### ❤️ Избранное
+- ♥ Добавление / удаление из избранного
+- 📋 Отдельная страница с избранными товарами
+- 💾 Сохранение между сессиями
+
+### 👤 Личный кабинет
+- 🔐 Авторизация (демо-доступ: `demo@orvix.com` / `demo123`)
+- 📋 История заказов
+- 📍 Смена города
+- 🚪 Выход из аккаунта
+
+### 📦 Оформление заказа
+- 📍 **Шаг 1:** Адрес доставки
+- 🚚 **Шаг 2:** Способ доставки (курьер / пункт выдачи)
+- 💳 **Шаг 3:** Способ оплаты (карта / наличные)
+- ✅ **Шаг 4:** Подтверждение заказа
+
+### 🎯 Дополнительно
+- 🏙️ **Смена города** (10 городов: Москва, СПб, Казань...)
+- 📄 **Демо-страницы:** Идеи, Скидки, Услуги, Поддержка, Подарочные карты, Для бизнеса
+- 📱 Полностью **адаптивный дизайн**
+- 🌙 Готовность к тёмной теме (CSS-переменные)
+
+---
+
+## 🛠 Технологический стек
+
+| Технология | Назначение |
+|-----------|------------|
+| **Next.js 16** | Фреймворк, Server & Client Components |
+| **React 19** | UI-библиотека |
+| **TypeScript** | Типизация |
+| **Zustand** | Стейт-менеджмент (корзина, избранное, авторизация) |
+| **TanStack Query** | Запросы к API, кэширование |
+| **Sass/SCSS** | Стилизация |
+| **Vitest** | Unit-тестирование |
+| **DummyJSON API** | Тестовый бэкенд для товаров |
+
+---
+
+## 📁 Структура проекта
 
 ```
-src
- ├── app
- │   ├── page.tsx
- │   ├── layout.tsx
- │   ├── cart
- │   ├── favorites
- │   ├── category
- │   └── product
- │
- ├── components
- │   ├── Header
- │   ├── Footer
- │   ├── CategoriesGrid
- │   ├── CatalogMenu
- │   └── ProductPageClient
- │
- ├── scss
- │   ├── _reset.scss
- │   └── _variables.scss
- │
- ├── store.ts
- └── types
+src/
+├── app/                    # Next.js App Router
+│   ├── cart/               # 🛒 Корзина
+│   ├── checkout/           # 📦 Оформление заказа
+│   ├── favorites/          # ❤️ Избранное
+│   ├── profile/            # 👤 Личный кабинет
+│   ├── product/[id]/       # 📱 Страница товара
+│   ├── ideas/              # 💡 Идеи
+│   ├── sales/              # 🔥 Скидки
+│   ├── services/           # 🛠 Услуги
+│   ├── support/            # 🎧 Поддержка
+│   ├── gift-cards/         # 🎁 Подарочные карты
+│   ├── business/           # 🏢 Для бизнеса
+│   ├── mobile/             # 📱 Мобильное приложение
+│   ├── globals.scss        # 🎨 Все стили в одном файле
+│   └── layout.tsx          # 📐 Корневой layout
+├── components/             # 🧩 React-компоненты
+│   ├── Header.tsx          # Шапка с навигацией
+│   ├── TopBar.tsx          # Верхняя панель
+│   ├── Footer.tsx          # Подвал
+│   ├── Hero.tsx            # Слайдер на главной
+│   ├── CatalogMenu.tsx     # Мега-меню каталога
+│   ├── CategoriesGrid.tsx  # Сетка товаров
+│   ├── Chips.tsx           # Чипсы фильтров
+│   ├── SearchBar.tsx       # Поисковая строка
+│   ├── HomePage.tsx        # Главная страница
+│   ├── ProductPageClient.tsx # Страница товара
+│   └── CityModal.tsx       # Модалка выбора города
+├── lib/                    # 🔧 Утилиты
+│   └── products.ts         # Загрузка товаров
+├── types/                  # 📝 TypeScript-типы
+│   ├── api.ts              # Типы API
+│   └── user.ts             # Типы пользователя
+├── data/                   # 💾 Данные
+│   └── user.json           # Демо-пользователь
+├── test/                   # 🧪 Тесты
+│   ├── setup.ts            # Конфигурация Vitest
+│   └── store.test.ts       # Тесты стора (20 тестов)
+└── store.ts                # 🗄️ Zustand-стор
 ```
 
 ---
 
-## API
+## 🚀 Установка и запуск
 
-Product data is provided by:
+### 📋 Требования
+- **Node.js** 18+
+- **npm** 9+
 
-https://dummyjson.com/products
+### ⚡ Быстрый старт
 
-The API is used for:
+```bash
+# Клонировать репозиторий
+git clone https://github.com/your-username/orvix.git
+cd orvix
 
-* product catalog
-* product pages
-* category filtering
-
----
-
-## Installation
-
-Clone the repository:
-
-```
-git clone https://github.com/bellatrisa1/marketplace-app.git
-```
-
-Install dependencies:
-
-```
+# Установить зависимости
 npm install
-```
 
-Run the development server:
-
-```
+# Запустить в режиме разработки
 npm run dev
 ```
 
-Build the project:
+Открыть [http://localhost:3000](http://localhost:3000) 🎉
 
-```
+### 🔨 Сборка
+
+```bash
 npm run build
-```
-
-Start production build:
-
-```
 npm start
 ```
 
 ---
 
-## Future Improvements
+## 🧪 Тестирование
 
-Planned features include:
+Проект покрыт unit-тестами на **Vitest** (20 тестов).
 
-* Product filtering (price, rating, brand)
-* Pagination / infinite scroll
-* Improved search system
-* Authentication
-* Checkout flow
-* Order history
-* Performance optimization
+```bash
+# Запуск тестов
+npm test
+
+# UI-режим (графический интерфейс)
+npm run test:ui
+
+# С отчётом о покрытии
+npm run test:coverage
+```
+
+### Что тестируется:
+- ✅ Добавление / удаление из корзины
+- ✅ Изменение количества товаров
+- ✅ Подсчёт общей стоимости
+- ✅ Избранное (добавление / удаление / проверка)
+- ✅ Авторизация (вход / выход / неверные данные)
+- ✅ Смена города
+- ✅ Интеграционные сценарии
 
 ---
 
-## Purpose
+## 🔑 Демо-доступ
 
-This project is being developed as a **portfolio project** to demonstrate frontend architecture for a marketplace-style application.
+| Поле | Значение |
+|------|----------|
+| 📧 Email | `demo@orvix.com` |
+| 🔒 Пароль | `demo123` |
 
-It focuses on:
+---
 
-* clean project structure
-* scalable state management
-* modern React patterns
-* production-ready UI components
+## 🎯 Ключевые особенности
+
+- ⚡ **Производительность** — Next.js 16 с React Server Components
+- 💾 **Персистентность** — Zustand с `persist` в localStorage
+- 📱 **Адаптивность** — 4 брейкпоинта (380px → 1200px+)
+- 🎨 **Чистые стили** — всё в одном `globals.scss`
+- 🧪 **Тесты** — Vitest, 20 тестов
+- 🔄 **Reactivity** — TanStack Query для запросов
+- 🏗️ **Масштабируемость** — модульная архитектура
+
+---
+
+## 🗺️ Карта маршрутов
+
+| Маршрут | Страница |
+|---------|----------|
+| `/` | 🏠 Главная |
+| `/cart` | 🛒 Корзина |
+| `/favorites` | ❤️ Избранное |
+| `/profile` | 👤 Личный кабинет |
+| `/checkout` | 📦 Оформление заказа |
+| `/product/:id` | 📱 Товар |
+| `/category/:slug` | 📂 Категория |
+| `/ideas` | 💡 Идеи |
+| `/sales` | 🔥 Скидки |
+| `/services` | 🛠 Услуги |
+| `/support` | 🎧 Поддержка |
+| `/gift-cards` | 🎁 Подарочные карты |
+| `/business` | 🏢 Для бизнеса |
+| `/mobile` | 📱 Мобильное приложение |
+
+**Всего: 14 маршрутов** 🎯
+
+---
+
+## 🎨 Цветовая схема
+
+| Цвет | Hex | Использование |
+|------|-----|---------------|
+| 🔵 Фиолетовый | `#3b32c8` | Основной акцент |
+| 🟣 Светло-фиолетовый | `#6c45ff` | Градиенты, кнопки |
+| 🔴 Красный | `#ff2d55` | Скидки, избранное |
+| 🟢 Зелёный | `#1f9d55` | Успех, статусы |
+| ⚫ Тёмный | `#171a2c` | Заголовки, текст |
+| ⚪ Светлый | `#f3f4f8` | Фон страницы |
+
+---
+
+## 📈 Планы по развитию
+
+- [ ] 🌙 Тёмная тема
+- [ ] 🎬 Анимации Framer Motion
+- [ ] 📊 Админ-панель
+- [ ] 🌍 Локализация (en/ru)
+- [ ] 📱 PWA
+- [ ] 💬 Чат с поддержкой
+- [ ] ⭐ Отзывы и рейтинги
+
+---
+
+## 👩‍💻 Автор
+
+<div align="center">
+
+**Белла Манкиева**
+
+[![GitHub](https://img.shields.io/badge/-GitHub-181717?logo=github)](https://github.com/bellatrisa1)
+[![Telegram](https://img.shields.io/badge/-Telegram-26A5E4?logo=telegram)](https://t.me/bellatrix_bb)
+
+</div>
+
+---
+
+<div align="center">
+  <sub>Сделано с ❤️ для портфолио</sub>
+</div>
