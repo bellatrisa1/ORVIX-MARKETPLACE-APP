@@ -13,8 +13,11 @@ const mockProduct: MarketplaceProduct = {
   rating: 4.5,
   stock: 10,
   brand: 'TestBrand',
-  thumbnail: '/test.jpg',
-  images: ['/test1.jpg', '/test2.jpg'],
+  thumbnail: 'https://cdn.dummyjson.com/test.jpg',
+  images: [
+    'https://cdn.dummyjson.com/test1.jpg',
+    'https://cdn.dummyjson.com/test2.jpg',
+  ],
 };
 
 const mockProduct2: MarketplaceProduct = {
@@ -28,13 +31,15 @@ const mockProduct2: MarketplaceProduct = {
   rating: 4.0,
   stock: 5,
   brand: 'TestBrand2',
-  thumbnail: '/test2.jpg',
-  images: ['/test3.jpg'],
+  thumbnail: 'https://cdn.dummyjson.com/test2.jpg',
+  images: ['https://cdn.dummyjson.com/test3.jpg'],
 };
 
 describe('Store', () => {
   // Сбрасываем стор перед каждым тестом
   beforeEach(() => {
+    localStorage.clear();
+    useStore.getState().hydrate();
     const store = useStore.getState();
     store.clearCart();
     // Очищаем избранное и логин через прямой set
@@ -43,6 +48,9 @@ describe('Store', () => {
       favoriteIds: [],
       user: null,
       isLoggedIn: false,
+      orders: [],
+      city: 'Санкт-Петербург',
+      storageError: null,
     });
   });
 

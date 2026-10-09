@@ -1,10 +1,11 @@
-"use client";
+'use client';
 
-import Image from "next/image";
-import Link from "next/link";
-import { useMemo, useState } from "react";
-import { useStore } from "@/store";
-import type { MarketplaceProduct } from "@/types/api";
+import Image from 'next/image';
+import Link from 'next/link';
+import { useMemo, useState } from 'react';
+import { useStore } from '@/store';
+import type { MarketplaceProduct } from '@/types/api';
+import { formatMoney } from '@/lib/money';
 
 interface ProductPageClientProps {
   product: MarketplaceProduct;
@@ -24,10 +25,12 @@ export default function ProductPageClient({
   const increaseCartItem = useStore((state) => state.increaseCartItem);
   const decreaseCartItem = useStore((state) => state.decreaseCartItem);
   const toggleFavorite = useStore((state) => state.toggleFavorite);
-  const isFavorite = useStore((state) => state.isFavorite);
+  const favoriteActive = useStore((state) =>
+    state.favoriteIds.includes(product.id),
+  );
+  const ready = useStore((state) => state.hydrated && state.storageReady);
 
   const cartItem = cartItems.find((item) => item.id === product.id);
-  const favoriteActive = isFavorite(product.id);
 
   const ratingText = useMemo(() => product.rating.toFixed(1), [product.rating]);
 
@@ -51,8 +54,10 @@ export default function ProductPageClient({
                 key={image}
                 type="button"
                 className={`product-view__thumb ${
-                  activeImage === image ? "product-view__thumb--active" : ""
+                  activeImage === image ? 'product-view__thumb--active' : ''
                 }`}
+                aria-label={`Фото ${product.images.indexOf(image) + 1}`}
+                aria-pressed={activeImage === image}
                 onClick={() => setActiveImage(image)}
               >
                 <Image
@@ -77,8 +82,15 @@ export default function ProductPageClient({
             <button
               type="button"
               className={`product-view__favorite ${
-                favoriteActive ? "product-view__favorite--active" : ""
+                favoriteActive ? 'product-view__favorite--active' : ''
               }`}
+              disabled={!ready}
+              aria-pressed={favoriteActive}
+              aria-label={
+                favoriteActive
+                  ? 'Удалить из избранного'
+                  : 'Добавить в избранное'
+              }
               onClick={() => toggleFavorite(product)}
             >
               ♥
@@ -93,12 +105,12 @@ export default function ProductPageClient({
 
           <div className="product-view__prices">
             <span className="product-view__price">
-              ${product.price.toFixed(2)}
+              {formatMoney(product.price)}
             </span>
 
             {product.oldPrice && product.oldPrice > product.price ? (
               <span className="product-view__old-price">
-                ${product.oldPrice.toFixed(2)}
+                {formatMoney(product.oldPrice)}
               </span>
             ) : null}
 
@@ -113,15 +125,18 @@ export default function ProductPageClient({
             <button
               className="product-view__button"
               type="button"
+              disabled={!ready || product.stock <= 0}
               onClick={() => addToCart(product)}
             >
-              Добавить в корзину
+              {product.stock > 0 ? 'Добавить в корзину' : 'Нет в наличии'}
             </button>
           ) : (
             <div className="product-view__controls">
               <button
                 className="product-view__control-btn"
                 type="button"
+                disabled={!ready}
+                aria-label="Уменьшить количество"
                 onClick={() => decreaseCartItem(product.id)}
               >
                 −
@@ -134,6 +149,8 @@ export default function ProductPageClient({
               <button
                 className="product-view__control-btn"
                 type="button"
+                disabled={!ready || cartItem.cartQuantity >= product.stock}
+                aria-label="Увеличить количество"
                 onClick={() => increaseCartItem(product.id)}
               >
                 +
@@ -192,7 +209,7 @@ export default function ProductPageClient({
                 <div className="related-product-card__content">
                   <h3 className="related-product-card__title">{item.title}</h3>
                   <p className="related-product-card__price">
-                    ${item.price.toFixed(2)}
+                    {formatMoney(item.price)}
                   </p>
                 </div>
               </Link>

@@ -1,4 +1,5 @@
-import Image from "next/image";
+import Image from 'next/image';
+import Link from 'next/link';
 
 export default function Footer() {
   return (
@@ -14,49 +15,103 @@ export default function Footer() {
           />
 
           <p className="footer__description">
-            Orvix — современный маркетплейс с тысячами товаров по выгодным
-            ценам. Электроника, одежда, аксессуары и многое другое в одном
-            месте.
+            Orvix — демонстрационный маркетплейс. Электроника, одежда,
+            аксессуары и другие товары из тестового каталога. Разделы без ссылок
+            пока недоступны.
           </p>
 
           <div className="footer__socials">
-            <a href="#">📱</a>
-            <a href="#">📷</a>
-            <a href="#">🐦</a>
-            <a href="#">▶</a>
+            <span
+              className="footer__unavailable"
+              aria-label="📱 — пока недоступно"
+              title="Пока недоступно"
+            >
+              📱
+            </span>
+            <span
+              className="footer__unavailable"
+              aria-label="📷 — пока недоступно"
+              title="Пока недоступно"
+            >
+              📷
+            </span>
+            <span
+              className="footer__unavailable"
+              aria-label="🐦 — пока недоступно"
+              title="Пока недоступно"
+            >
+              🐦
+            </span>
+            <span
+              className="footer__unavailable"
+              aria-label="▶ — пока недоступно"
+              title="Пока недоступно"
+            >
+              ▶
+            </span>
           </div>
         </div>
 
         <div className="footer__column">
           <h4>Покупателям</h4>
-          <a href="#">Как сделать заказ</a>
-          <a href="#">Доставка</a>
-          <a href="#">Возврат товара</a>
-          <a href="#">Гарантии</a>
-          <a href="#">Помощь</a>
+          <Link href="/support">Как сделать заказ</Link>
+          <Link href="/services">Доставка</Link>
+          <span
+            className="footer__unavailable"
+            aria-label="Возврат товара — пока недоступно"
+            title="Пока недоступно"
+          >
+            Возврат товара
+          </span>
+          <span
+            className="footer__unavailable"
+            aria-label="Гарантии — пока недоступно"
+            title="Пока недоступно"
+          >
+            Гарантии
+          </span>
+          <Link href="/support">Помощь</Link>
         </div>
 
         <div className="footer__column">
           <h4>Компания</h4>
-          <a href="#">О нас</a>
-          <a href="#">Новости</a>
-          <a href="#">Карьера</a>
-          <a href="#">Партнёрам</a>
-          <a href="#">Контакты</a>
+          <span
+            className="footer__unavailable"
+            aria-label="О нас — пока недоступно"
+            title="Пока недоступно"
+          >
+            О нас
+          </span>
+          <span
+            className="footer__unavailable"
+            aria-label="Новости — пока недоступно"
+            title="Пока недоступно"
+          >
+            Новости
+          </span>
+          <span
+            className="footer__unavailable"
+            aria-label="Карьера — пока недоступно"
+            title="Пока недоступно"
+          >
+            Карьера
+          </span>
+          <Link href="/business">Партнёрам</Link>
+          <Link href="/support">Контакты</Link>
         </div>
 
         <div className="footer__column">
           <h4>Каталог</h4>
-          <a href="#">Электроника</a>
-          <a href="#">Одежда</a>
-          <a href="#">Техника</a>
-          <a href="#">Красота</a>
-          <a href="#">Аксессуары</a>
+          <Link href="/category/smartphones">Электроника</Link>
+          <Link href="/category/mens-shirts">Одежда</Link>
+          <Link href="/category/laptops">Техника</Link>
+          <Link href="/category/beauty">Красота</Link>
+          <Link href="/category/mobile-accessories">Аксессуары</Link>
         </div>
 
         <div className="footer__column">
           <h4>Контакты</h4>
-          <p>support@orvix.com</p>
+          <p>Демо: support@orvix.com</p>
           <p>+7 (812) 555-89-72</p>
           <p>Санкт-Петербург</p>
         </div>
@@ -66,8 +121,20 @@ export default function Footer() {
         <div className="container footer__bottom-inner">
           <p>© {new Date().getFullYear()} Orvix. Все права защищены.</p>
           <div className="footer__legal">
-            <a href="#">Политика конфиденциальности</a>
-            <a href="#">Пользовательское соглашение</a>
+            <span
+              className="footer__unavailable"
+              aria-label="Политика конфиденциальности — пока недоступно"
+              title="Пока недоступно"
+            >
+              Политика конфиденциальности
+            </span>
+            <span
+              className="footer__unavailable"
+              aria-label="Пользовательское соглашение — пока недоступно"
+              title="Пока недоступно"
+            >
+              Пользовательское соглашение
+            </span>
           </div>
         </div>
       </div>

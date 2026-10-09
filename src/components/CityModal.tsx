@@ -1,6 +1,7 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
+import { useDialogFocus } from '@/hooks/useDialogFocus';
 import { useStore } from '@/store';
 
 const cities = [
@@ -22,23 +23,18 @@ interface CityModalProps {
 }
 
 export default function CityModal({ isOpen, onClose }: CityModalProps) {
+  const modalRef = useRef<HTMLDivElement | null>(null);
+  useDialogFocus(isOpen, modalRef, onClose);
+  const ready = useStore((state) => state.hydrated && state.storageReady);
   const updateCity = useStore((state) => state.updateCity);
-  const currentCity = useStore(
-    (state) => state.user?.city || 'Санкт-Петербург'
-  );
+  const currentCity = useStore((state) => state.city);
 
   useEffect(() => {
-    const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
-    };
-
     if (isOpen) {
-      document.addEventListener('keydown', handleEscape);
       document.body.style.overflow = 'hidden';
     }
 
     return () => {
-      document.removeEventListener('keydown', handleEscape);
       document.body.style.overflow = '';
     };
   }, [isOpen, onClose]);
@@ -52,10 +48,25 @@ export default function CityModal({ isOpen, onClose }: CityModalProps) {
 
   return (
     <div className="modal-overlay" onClick={onClose}>
-      <div className="modal" onClick={(e) => e.stopPropagation()}>
+      <div
+        className="modal"
+        ref={modalRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="city-title"
+        tabIndex={-1}
+        onClick={(e) => e.stopPropagation()}
+      >
         <div className="modal__head">
-          <h2 className="modal__title">Выберите город</h2>
-          <button className="modal__close" onClick={onClose} type="button">
+          <h2 id="city-title" className="modal__title">
+            Выберите город
+          </h2>
+          <button
+            aria-label="Закрыть выбор города"
+            className="modal__close"
+            onClick={onClose}
+            type="button"
+          >
             ✕
           </button>
         </div>
@@ -68,6 +79,8 @@ export default function CityModal({ isOpen, onClose }: CityModalProps) {
               className={`modal__city-btn ${
                 currentCity === city ? 'modal__city-btn--active' : ''
               }`}
+              disabled={!ready}
+              aria-pressed={currentCity === city}
               onClick={() => handleSelect(city)}
             >
               {city}

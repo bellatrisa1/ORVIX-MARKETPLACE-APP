@@ -2,17 +2,23 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useStore } from '@/store';
 import CatalogMenu from './CatalogMenu';
+import { useDialogFocus } from '@/hooks/useDialogFocus';
 
 export default function Header() {
-  const cartItemsCount = useStore((state) => state.getCartItemsCount());
+  const cartItemsCount = useStore((state) =>
+    state.cartItems.reduce((count, item) => count + item.cartQuantity, 0),
+  );
   const favoriteItems = useStore((state) => state.favoriteIds);
 
   const [isCatalogOpen, setIsCatalogOpen] = useState(false);
   const [activeCategory, setActiveCategory] = useState('Электроника');
 
+  const closeCatalog = useCallback(() => setIsCatalogOpen(false), []);
+  const menuRef = useRef<HTMLDivElement | null>(null);
+  useDialogFocus(isCatalogOpen, menuRef, closeCatalog);
   const headerRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -25,18 +31,10 @@ export default function Header() {
       }
     };
 
-    const handleEscape = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
-        setIsCatalogOpen(false);
-      }
-    };
-
     document.addEventListener('mousedown', handleClickOutside);
-    document.addEventListener('keydown', handleEscape);
 
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
-      document.removeEventListener('keydown', handleEscape);
     };
   }, []);
 
@@ -58,6 +56,9 @@ export default function Header() {
           <button
             className={`catalog-btn ${isCatalogOpen ? 'catalog-btn--active' : ''}`}
             type="button"
+            aria-expanded={isCatalogOpen}
+            aria-controls="catalog-menu"
+            aria-haspopup="dialog"
             onClick={() => setIsCatalogOpen((prev) => !prev)}
           >
             <span className="catalog-btn__burger">
@@ -99,6 +100,8 @@ export default function Header() {
           isOpen={isCatalogOpen}
           activeCategory={activeCategory}
           onCategoryChange={setActiveCategory}
+          menuRef={menuRef}
+          onClose={closeCatalog}
         />
       </div>
     </header>

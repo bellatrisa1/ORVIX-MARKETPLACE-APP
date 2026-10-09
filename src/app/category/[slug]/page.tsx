@@ -2,8 +2,9 @@ import Link from 'next/link';
 import Header from '@/components/Header';
 import TopBar from '@/components/TopBar';
 import Footer from '@/components/Footer';
-import CategoriesGrid from '@/components/CategoriesGrid';
-import { getProducts } from '@/lib/products';
+import CategoryCatalog from '@/components/CategoryCatalog';
+import { notFound } from 'next/navigation';
+import { getCategories, getProducts } from '@/lib/products';
 
 function formatCategoryTitle(slug: string) {
   return slug
@@ -18,9 +19,12 @@ export default async function CategoryPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const products = await getProducts();
+  if (!/^[a-z0-9-]+$/.test(slug)) notFound();
+  const categories = await getCategories();
+  if (!categories.includes(slug)) notFound();
+  const products = await getProducts(slug);
   const filteredProducts = products.filter(
-    (product) => product.category === slug
+    (product) => product.category === slug,
   );
   const title = formatCategoryTitle(slug);
 
@@ -45,11 +49,7 @@ export default async function CategoryPage({
               </div>
             </div>
 
-            <CategoriesGrid
-              products={filteredProducts}
-              isLoading={false}
-              isError={false}
-            />
+            <CategoryCatalog products={filteredProducts} />
           </div>
         </div>
       </main>

@@ -1,6 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import { Suspense, useRef, useState } from 'react';
+import { useSearchParams } from 'next/navigation';
+import { validateContacts } from '@/lib/checkout';
+import { formatMoney } from '@/lib/money';
+import { cartTotal } from '@/lib/cart';
+import type { CheckoutDetails, DemoOrder } from '@/types/order';
 import Link from 'next/link';
 import Header from '@/components/Header';
 import TopBar from '@/components/TopBar';
@@ -10,19 +15,95 @@ import { useStore } from '@/store';
 type Step = 'address' | 'delivery' | 'payment' | 'confirm';
 
 export default function CheckoutPage() {
+  return (
+    <Suspense fallback={<p className="products-state">Загрузка оформления…</p>}>
+      <CheckoutContent />
+    </Suspense>
+  );
+}
+
+function CheckoutContent() {
   const cartItems = useStore((state) => state.cartItems);
-  const totalPrice = useStore((state) => state.getCartTotalPrice());
-  const clearCart = useStore((state) => state.clearCart);
-  const user = useStore((state) => state.user);
+  const totalPrice = useStore((state) => cartTotal(state.cartItems));
+  const placeDemoOrder = useStore((state) => state.placeDemoOrder);
+  const orders = useStore((state) => state.orders);
+  const hydrated = useStore((state) => state.hydrated);
+  const ready = useStore((state) => state.hydrated && state.storageReady);
+  const city = useStore((state) => state.city);
+  const searchParams = useSearchParams();
+  const submitting = useRef(false);
+  const completedAt = useRef(0);
+  const requestId = useRef<string | null>(null);
+  const [error, setError] = useState('');
+  const [pending, setPending] = useState(false);
+  const [savedOrder, setSavedOrder] = useState<DemoOrder | null>(null);
 
   const [step, setStep] = useState<Step>('address');
-  const [orderComplete, setOrderComplete] = useState(false);
+  const orderComplete =
+    savedOrder ??
+    orders.find((order) => order.id === searchParams.get('order'));
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
 
   const [address, setAddress] = useState('');
   const [apartment, setApartment] = useState('');
-  const [delivery, setDelivery] = useState('courier');
-  const [payment, setPayment] = useState('card');
+  const [delivery, setDelivery] =
+    useState<CheckoutDetails['delivery']>('courier');
+  const [payment, setPayment] = useState<CheckoutDetails['payment']>('card');
   const [comment, setComment] = useState('');
+
+  const details: CheckoutDetails = {
+    name,
+    email,
+    phone,
+    city,
+    address,
+    apartment,
+    delivery,
+    payment,
+    comment,
+  };
+  const confirmOrder = () => {
+    if (submitting.current) return;
+    submitting.current = true;
+    setPending(true);
+    setError('');
+    try {
+      requestId.current ??= `demo-${crypto.randomUUID()}`;
+      const order = placeDemoOrder(requestId.current, details);
+      completedAt.current = performance.now();
+      // URL обновляется синхронно: даже немедленная перезагрузка открывает сохранённый результат.
+      window.history.replaceState(
+        null,
+        '',
+        `/checkout?order=${encodeURIComponent(order.id)}`,
+      );
+      setSavedOrder(order);
+    } catch (cause) {
+      setError(
+        cause instanceof Error
+          ? cause.message
+          : 'Не удалось сохранить демозаказ.',
+      );
+      submitting.current = false;
+      setPending(false);
+    }
+  };
+
+  if (!hydrated)
+    return (
+      <div className="page">
+        <TopBar />
+        <Header />
+        <main className="main">
+          <p className="products-state" role="status">
+            Загрузка оформления…
+          </p>
+        </main>
+        <Footer />
+      </div>
+    );
 
   if (cartItems.length === 0 && !orderComplete) {
     return (
@@ -48,26 +129,41 @@ export default function CheckoutPage() {
 
   if (orderComplete) {
     return (
-      <div className="page">
+      <div
+        className="page"
+        onClickCapture={(event) => {
+          // После смены высоты страницы второй клик может попасть в ссылку под прежней кнопкой.
+          if (
+            event.detail > 1 &&
+            performance.now() - completedAt.current < 500
+          ) {
+            event.preventDefault();
+            event.stopPropagation();
+          }
+        }}
+      >
         <TopBar />
         <Header />
         <main className="main">
           <div className="container">
             <div className="checkout-success">
               <span className="checkout-success__icon">✅</span>
-              <h1>Заказ оформлен!</h1>
+              <h1>Демозаказ сохранён!</h1>
               <p>
                 Номер заказа:{' '}
-                <strong>ord-{Date.now().toString().slice(-6)}</strong>
+                <strong data-testid="saved-order-id">{orderComplete.id}</strong>
               </p>
               <p>
-                Мы отправили детали заказа на {user?.email || 'вашу почту'}.
+                Это демонстрационный заказ. Деньги не списываются, письмо не
+                отправляется и доставка не выполняется.
               </p>
               <p className="checkout-success__delivery">
-                Ожидайте доставку{' '}
-                {delivery === 'courier' ? 'курьером' : 'в пункт выдачи'} в
-                течение 1–3 дней.
+                Заказ сохранён в этом браузере. Сумма:{' '}
+                {formatMoney(orderComplete.total)}
               </p>
+              <Link href="/profile" className="checkout-success__link">
+                История демозаказов
+              </Link>
               <Link href="/" className="checkout-success__link">
                 Вернуться на главную
               </Link>
@@ -97,6 +193,16 @@ export default function CheckoutPage() {
         <div className="container">
           <div className="checkout">
             <h1 className="checkout__title">Оформление заказа</h1>
+            <p className="demo-note">
+              Демонстрационное оформление: деньги не списываются, доставка не
+              выполняется. Контакты сохраняются только в этом браузере.
+              Используйте вымышленные данные; реквизиты карты не нужны.
+            </p>
+            {error && (
+              <p className="auth__error" role="alert">
+                {error}
+              </p>
+            )}
 
             {/* Степпер */}
             <div className="stepper">
@@ -131,13 +237,56 @@ export default function CheckoutPage() {
               <div className="checkout__step">
                 <h2>Адрес доставки</h2>
 
-                <div className="checkout__form">
+                <form
+                  className="checkout__form"
+                  onSubmit={(event) => {
+                    event.preventDefault();
+                    const error = validateContacts(details);
+                    setError(error ?? '');
+                    if (!error) setStep('delivery');
+                  }}
+                >
+                  <label className="checkout__label">
+                    Имя
+                    <input
+                      className="checkout__input"
+                      value={name}
+                      onChange={(event) => setName(event.target.value)}
+                      required
+                      maxLength={100}
+                      autoComplete="name"
+                    />
+                  </label>
+                  <label className="checkout__label">
+                    Email
+                    <input
+                      className="checkout__input"
+                      type="email"
+                      value={email}
+                      onChange={(event) => setEmail(event.target.value)}
+                      required
+                      maxLength={254}
+                      autoComplete="email"
+                    />
+                  </label>
+                  <label className="checkout__label">
+                    Телефон
+                    <input
+                      className="checkout__input"
+                      type="tel"
+                      value={phone}
+                      onChange={(event) => setPhone(event.target.value)}
+                      required
+                      maxLength={30}
+                      autoComplete="tel"
+                    />
+                  </label>
                   <label className="checkout__label">
                     Город
                     <input
                       className="checkout__input"
                       type="text"
-                      value={user?.city || 'Санкт-Петербург'}
+                      value={city}
                       disabled
                     />
                   </label>
@@ -148,6 +297,10 @@ export default function CheckoutPage() {
                       className="checkout__input"
                       type="text"
                       placeholder="Улица, дом"
+                      required
+                      minLength={5}
+                      maxLength={300}
+                      autoComplete="street-address"
                       value={address}
                       onChange={(e) => setAddress(e.target.value)}
                     />
@@ -159,6 +312,7 @@ export default function CheckoutPage() {
                       className="checkout__input"
                       type="text"
                       placeholder="Кв. 42"
+                      maxLength={50}
                       value={apartment}
                       onChange={(e) => setApartment(e.target.value)}
                     />
@@ -166,12 +320,12 @@ export default function CheckoutPage() {
 
                   <button
                     className="checkout__btn"
-                    onClick={() => setStep('delivery')}
-                    disabled={!address.trim()}
+                    type="submit"
+                    disabled={!ready}
                   >
                     Далее
                   </button>
-                </div>
+                </form>
               </div>
             )}
 
@@ -191,11 +345,16 @@ export default function CheckoutPage() {
                       name="delivery"
                       value="courier"
                       checked={delivery === 'courier'}
-                      onChange={(e) => setDelivery(e.target.value)}
+                      onChange={(e) => {
+                        const next = e.target
+                          .value as CheckoutDetails['delivery'];
+                        setDelivery(next);
+                        if (next === 'pickup') setPayment('card');
+                      }}
                     />
                     <div>
                       <strong>🚚 Курьером</strong>
-                      <p>Доставка до двери, 1–3 дня</p>
+                      <p>Демонстрационный способ: без реальной доставки</p>
                       <span>Бесплатно</span>
                     </div>
                   </label>
@@ -210,11 +369,19 @@ export default function CheckoutPage() {
                       name="delivery"
                       value="pickup"
                       checked={delivery === 'pickup'}
-                      onChange={(e) => setDelivery(e.target.value)}
+                      onChange={(e) => {
+                        const next = e.target
+                          .value as CheckoutDetails['delivery'];
+                        setDelivery(next);
+                        if (next === 'pickup') setPayment('card');
+                      }}
                     />
                     <div>
                       <strong>📦 Пункт выдачи</strong>
-                      <p>Забрать самостоятельно, 1–3 дня</p>
+                      <p>
+                        Демонстрационный вариант: выбор реального ПВЗ
+                        отсутствует
+                      </p>
                       <span>Бесплатно</span>
                     </div>
                   </label>
@@ -253,11 +420,13 @@ export default function CheckoutPage() {
                       name="payment"
                       value="card"
                       checked={payment === 'card'}
-                      onChange={(e) => setPayment(e.target.value)}
+                      onChange={(e) =>
+                        setPayment(e.target.value as CheckoutDetails['payment'])
+                      }
                     />
                     <div>
                       <strong>💳 Банковской картой</strong>
-                      <p>Visa, Mastercard, Мир</p>
+                      <p>Демонстрационный выбор, без списания денег</p>
                     </div>
                   </label>
 
@@ -271,7 +440,10 @@ export default function CheckoutPage() {
                       name="payment"
                       value="cash"
                       checked={payment === 'cash'}
-                      onChange={(e) => setPayment(e.target.value)}
+                      disabled={delivery === 'pickup'}
+                      onChange={(e) =>
+                        setPayment(e.target.value as CheckoutDetails['payment'])
+                      }
                     />
                     <div>
                       <strong>💵 Наличными при получении</strong>
@@ -306,7 +478,7 @@ export default function CheckoutPage() {
                   <div className="checkout__summary-block">
                     <strong>📍 Адрес:</strong>
                     <p>
-                      {user?.city || 'Санкт-Петербург'}, {address}
+                      {city}, {address}
                       {apartment ? `, кв. ${apartment}` : ''}
                     </p>
                   </div>
@@ -333,15 +505,15 @@ export default function CheckoutPage() {
                         <span>{item.title}</span>
                         <span>x{item.cartQuantity}</span>
                         <span>
-                          ${(item.price * item.cartQuantity).toFixed(2)}
+                          {formatMoney(item.price * item.cartQuantity)}
                         </span>
                       </div>
                     ))}
                   </div>
 
                   <div className="checkout__summary-total">
-                    <span>Итого к оплате:</span>
-                    <strong>${totalPrice.toFixed(2)}</strong>
+                    <span>Сумма демозаказа:</span>
+                    <strong>{formatMoney(totalPrice)}</strong>
                   </div>
                 </div>
 
@@ -350,6 +522,7 @@ export default function CheckoutPage() {
                   <textarea
                     className="checkout__textarea"
                     placeholder="Домофон, этаж, пожелания..."
+                    maxLength={500}
                     value={comment}
                     onChange={(e) => setComment(e.target.value)}
                     rows={3}
@@ -365,12 +538,10 @@ export default function CheckoutPage() {
                   </button>
                   <button
                     className="checkout__btn"
-                    onClick={() => {
-                      clearCart();
-                      setOrderComplete(true);
-                    }}
+                    disabled={!ready || pending}
+                    onClick={confirmOrder}
                   >
-                    Подтвердить заказ
+                    {pending ? 'Сохранение…' : 'Подтвердить демозаказ'}
                   </button>
                 </div>
               </div>

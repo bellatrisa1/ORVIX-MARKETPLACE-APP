@@ -5,15 +5,21 @@ import Header from '@/components/Header';
 import TopBar from '@/components/TopBar';
 import Footer from '@/components/Footer';
 import { useStore } from '@/store';
+import { formatMoney } from '@/lib/money';
+import { cartTotal } from '@/lib/cart';
 
 export default function CartPage() {
+  const ready = useStore((state) => state.hydrated && state.storageReady);
+  const hydrated = useStore((state) => state.hydrated);
   const cartItems = useStore((state) => state.cartItems);
   const increaseCartItem = useStore((state) => state.increaseCartItem);
   const decreaseCartItem = useStore((state) => state.decreaseCartItem);
   const removeFromCart = useStore((state) => state.removeFromCart);
   const clearCart = useStore((state) => state.clearCart);
-  const totalPrice = useStore((state) => state.getCartTotalPrice());
-  const totalCount = useStore((state) => state.getCartItemsCount());
+  const totalPrice = useStore((state) => cartTotal(state.cartItems));
+  const totalCount = useStore((state) =>
+    state.cartItems.reduce((count, item) => count + item.cartQuantity, 0),
+  );
 
   return (
     <div className="page">
@@ -38,6 +44,7 @@ export default function CartPage() {
                 <button
                   className="cart-page__clear"
                   type="button"
+                  disabled={!ready}
                   onClick={clearCart}
                 >
                   Очистить корзину
@@ -45,7 +52,9 @@ export default function CartPage() {
               ) : null}
             </div>
 
-            {cartItems.length === 0 ? (
+            {!hydrated ? (
+              <p role="status">Загрузка корзины…</p>
+            ) : cartItems.length === 0 ? (
               <div className="cart-empty">
                 <div className="cart-empty__icon">🛒</div>
                 <h2>Ваша корзина пуста</h2>
@@ -59,25 +68,31 @@ export default function CartPage() {
                 <section className="cart-list">
                   {cartItems.map((item) => (
                     <article className="cart-item" key={item.id}>
-                      <div className="cart-item__image-wrap">
+                      <Link
+                        href={`/product/${item.id}`}
+                        className="cart-item__image-wrap"
+                        aria-label={`Открыть ${item.title}`}
+                      >
                         <img
                           src={item.thumbnail}
                           alt={item.title}
                           className="cart-item__image"
                         />
-                      </div>
+                      </Link>
 
                       <div className="cart-item__content">
-                        <h3 className="cart-item__title">{item.title}</h3>
+                        <h3 className="cart-item__title">
+                          <Link href={`/product/${item.id}`}>{item.title}</Link>
+                        </h3>
 
                         <div className="cart-item__prices">
                           <span className="cart-item__price">
-                            ${item.price.toFixed(2)}
+                            {formatMoney(item.price)}
                           </span>
 
                           {item.oldPrice && item.oldPrice > item.price ? (
                             <span className="cart-item__old-price">
-                              ${item.oldPrice.toFixed(2)}
+                              {formatMoney(item.oldPrice)}
                             </span>
                           ) : null}
                         </div>
@@ -87,6 +102,8 @@ export default function CartPage() {
                             <button
                               type="button"
                               className="cart-item__control-btn"
+                              disabled={!ready}
+                              aria-label={`Уменьшить количество ${item.title}`}
                               onClick={() => decreaseCartItem(item.id)}
                             >
                               −
@@ -99,6 +116,10 @@ export default function CartPage() {
                             <button
                               type="button"
                               className="cart-item__control-btn"
+                              disabled={
+                                !ready || item.cartQuantity >= item.stock
+                              }
+                              aria-label={`Увеличить количество ${item.title}`}
                               onClick={() => increaseCartItem(item.id)}
                             >
                               +
@@ -108,6 +129,7 @@ export default function CartPage() {
                           <button
                             className="cart-item__remove"
                             type="button"
+                            disabled={!ready}
                             onClick={() => removeFromCart(item.id)}
                           >
                             Удалить
@@ -116,7 +138,7 @@ export default function CartPage() {
                       </div>
 
                       <div className="cart-item__total">
-                        ${(item.price * item.cartQuantity).toFixed(2)}
+                        {formatMoney(item.price * item.cartQuantity)}
                       </div>
                     </article>
                   ))}
@@ -137,7 +159,7 @@ export default function CartPage() {
 
                   <div className="cart-summary__row cart-summary__row--total">
                     <span>Итого</span>
-                    <span>${totalPrice.toFixed(2)}</span>
+                    <span>{formatMoney(totalPrice)}</span>
                   </div>
 
                   <Link

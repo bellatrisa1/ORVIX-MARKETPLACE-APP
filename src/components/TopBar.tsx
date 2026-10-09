@@ -1,13 +1,14 @@
 'use client';
 
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import Link from 'next/link';
 import { useStore } from '@/store';
 import CityModal from './CityModal';
 
 export default function TopBar() {
   const [isCityOpen, setIsCityOpen] = useState(false);
-  const city = useStore((state) => state.user?.city || 'Санкт-Петербург');
+  const closeCity = useCallback(() => setIsCityOpen(false), []);
+  const city = useStore((state) => state.city);
 
   return (
     <>
@@ -40,7 +41,7 @@ export default function TopBar() {
         </div>
       </header>
 
-      <CityModal isOpen={isCityOpen} onClose={() => setIsCityOpen(false)} />
+      <CityModal isOpen={isCityOpen} onClose={closeCity} />
     </>
   );
 }

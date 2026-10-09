@@ -5,17 +5,22 @@ interface SearchBarProps {
 
 export default function SearchBar({ value, onChange }: SearchBarProps) {
   return (
-    <div className="search">
+    <form
+      className="search"
+      role="search"
+      onSubmit={(event) => event.preventDefault()}
+    >
       <input
         className="search__input"
         type="text"
         placeholder="Найти товар в Orvix"
+        aria-label="Найти товар в Orvix"
         value={value}
         onChange={(e) => onChange(e.target.value)}
       />
-      <button className="search__button" type="button" aria-label="Поиск">
+      <button className="search__button" type="submit" aria-label="Поиск">
         🔍
       </button>
-    </div>
+    </form>
   );
 }

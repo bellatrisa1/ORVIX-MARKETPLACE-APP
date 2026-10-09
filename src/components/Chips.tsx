@@ -1,29 +1,29 @@
 const chips = [
-  "Все",
-  "Скидки",
-  "beauty",
-  "fragrances",
-  "furniture",
-  "groceries",
-  "home-decoration",
-  "kitchen-accessories",
-  "laptops",
-  "mens-shirts",
-  "mens-shoes",
-  "mobile-accessories",
-  "skin-care",
-  "smartphones",
-  "sports-accessories",
-  "sunglasses",
-  "tablets",
-  "tops",
-  "vehicle",
-  "womens-bags",
-  "womens-dresses",
-  "womens-jewellery",
-  "womens-shoes",
-  "Дешевле",
-  "Дороже",
+  'Все',
+  'Скидки',
+  'beauty',
+  'fragrances',
+  'furniture',
+  'groceries',
+  'home-decoration',
+  'kitchen-accessories',
+  'laptops',
+  'mens-shirts',
+  'mens-shoes',
+  'mobile-accessories',
+  'skin-care',
+  'smartphones',
+  'sports-accessories',
+  'sunglasses',
+  'tablets',
+  'tops',
+  'vehicle',
+  'womens-bags',
+  'womens-dresses',
+  'womens-jewellery',
+  'womens-shoes',
+  'Дешевле',
+  'Дороже',
 ];
 
 interface ChipsProps {
@@ -37,8 +37,9 @@ export default function Chips({ activeChip, onChange }: ChipsProps) {
       {chips.map((chip) => (
         <button
           key={chip}
-          className={`chip ${activeChip === chip ? "chip--active" : ""}`}
+          className={`chip ${activeChip === chip ? 'chip--active' : ''}`}
           type="button"
+          aria-pressed={activeChip === chip}
           onClick={() => onChange(chip)}
         >
           {chip}

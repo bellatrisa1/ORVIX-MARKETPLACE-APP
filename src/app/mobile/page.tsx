@@ -15,8 +15,8 @@ export default function MobilePage() {
             <span className="demo-page__icon">📱</span>
             <h1>Мобильное приложение</h1>
             <p>
-              Скачайте приложение Orvix для iOS и Android. Удобный шопинг прямо
-              в вашем смартфоне.
+              Мобильное приложение пока не выпущено. Кнопки магазинов приложений
+              недоступны.
             </p>
 
             <div className="demo-page__stores">

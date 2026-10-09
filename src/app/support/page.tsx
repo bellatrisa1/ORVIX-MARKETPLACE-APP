@@ -15,27 +15,27 @@ export default function SupportPage() {
             <span className="demo-page__icon">🎧</span>
             <h1>Поддержка</h1>
             <p>
-              Мы всегда готовы помочь! Напишите нам в чат, позвоните или
-              оставьте заявку — ответим в течение 15 минут.
+              Демонстрационная страница поддержки. Чат и отправка обращений пока
+              недоступны; контакты приведены как примеры.
             </p>
 
             <div className="demo-page__contacts">
               <div className="demo-page__contact-card">
                 <span>📞</span>
                 <strong>+7 812 555-89-72</strong>
-                <p>Ежедневно с 9:00 до 21:00</p>
+                <p>Демонстрационный номер</p>
               </div>
 
               <div className="demo-page__contact-card">
                 <span>✉️</span>
                 <strong>support@orvix.com</strong>
-                <p>Отвечаем в течение часа</p>
+                <p>Демонстрационный адрес</p>
               </div>
 
               <div className="demo-page__contact-card">
                 <span>💬</span>
                 <strong>Онлайн-чат</strong>
-                <p>Среднее время ответа: 3 минуты</p>
+                <p>Пока недоступен</p>
               </div>
             </div>
 

@@ -1,10 +1,10 @@
-import Image from 'next/image';
+import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import Header from '@/components/Header';
 import TopBar from '@/components/TopBar';
 import Footer from '@/components/Footer';
 import ProductPageClient from '@/components/ProductPageClient';
-import { getProducts } from '@/lib/products';
+import { getProduct, getRelatedProducts } from '@/lib/products';
 
 function formatCategoryTitle(slug: string) {
   return slug
@@ -19,30 +19,13 @@ export default async function ProductPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const products = await getProducts();
-
-  const product = products.find((item) => item.id === Number(id));
-
-  if (!product) {
-    return (
-      <div className="page">
-        <TopBar />
-        <Header />
-        <main className="main">
-          <div className="container">
-            <div className="products-state">Товар не найден.</div>
-          </div>
-        </main>
-        <Footer />
-      </div>
-    );
-  }
-
-  const relatedProducts = products
-    .filter(
-      (item) => item.category === product.category && item.id !== product.id
-    )
-    .slice(0, 4);
+  if (!/^[1-9]\d*$/.test(id)) notFound();
+  const product = await getProduct(Number(id));
+  if (!product) notFound();
+  const relatedProducts = await getRelatedProducts(
+    product.category,
+    product.id,
+  );
 
   return (
     <div className="page">

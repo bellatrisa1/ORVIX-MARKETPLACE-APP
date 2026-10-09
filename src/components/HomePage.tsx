@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import TopBar from './TopBar';
 import Header from './Header';
@@ -9,79 +9,81 @@ import Chips from './Chips';
 import Hero from './Hero';
 import CategoriesGrid from './CategoriesGrid';
 import Footer from './Footer';
+import Pagination from './Pagination';
 import { getProducts } from '@/lib/products';
+import { selectCatalog } from '@/lib/catalog';
 
 export default function HomePage() {
   const [search, setSearch] = useState('');
   const [activeChip, setActiveChip] = useState('Все');
-
+  const [page, setPage] = useState(1);
   const {
     data = [],
     isLoading,
     isError,
+    refetch,
   } = useQuery({
     queryKey: ['marketplace-products'],
-    queryFn: getProducts,
+    queryFn: () => getProducts(),
   });
-
-  const filteredProducts = useMemo(() => {
-    const normalized = search.trim().toLowerCase();
-
-    let result = data;
-
-    if (activeChip === 'Скидки') {
-      result = result.filter((item) => item.discountPercentage > 0);
-    }
-
-    if (activeChip === 'Дешевле') {
-      result = [...result].sort((a, b) => a.price - b.price);
-    }
-
-    if (activeChip === 'Дороже') {
-      result = [...result].sort((a, b) => b.price - a.price);
-    }
-
-    if (
-      activeChip !== 'Все' &&
-      activeChip !== 'Скидки' &&
-      activeChip !== 'Дешевле' &&
-      activeChip !== 'Дороже'
-    ) {
-      result = result.filter(
-        (item) => item.category.toLowerCase() === activeChip.toLowerCase()
-      );
-    }
-
-    if (!normalized) return result;
-
-    return result.filter((item) => {
-      return (
-        item.title.toLowerCase().includes(normalized) ||
-        item.description.toLowerCase().includes(normalized) ||
-        item.category.toLowerCase().includes(normalized) ||
-        (item.brand?.toLowerCase().includes(normalized) ?? false)
-      );
-    });
-  }, [data, search, activeChip]);
-
+  const selected = selectCatalog(
+    data,
+    {
+      search,
+      category: ['Все', 'Скидки', 'Дешевле', 'Дороже'].includes(activeChip)
+        ? ''
+        : activeChip,
+      discounts: activeChip === 'Скидки',
+      sort:
+        activeChip === 'Дешевле'
+          ? 'asc'
+          : activeChip === 'Дороже'
+            ? 'desc'
+            : 'default',
+    },
+    page,
+  );
   return (
     <div className="page">
       <TopBar />
       <Header />
-
       <main className="main">
         <div className="container">
-          <SearchBar value={search} onChange={setSearch} />
-          <Chips activeChip={activeChip} onChange={setActiveChip} />
-          <Hero />
-          <CategoriesGrid
-            products={filteredProducts}
-            isLoading={isLoading}
-            isError={isError}
+          <SearchBar
+            value={search}
+            onChange={(value) => {
+              setSearch(value);
+              setPage(1);
+            }}
           />
+          <Chips
+            activeChip={activeChip}
+            onChange={(value) => {
+              setActiveChip(value);
+              setPage(1);
+            }}
+          />
+          <Hero
+            onOffers={() => {
+              setActiveChip('Скидки');
+              setPage(1);
+            }}
+          />
+          <div id="catalog-products">
+            <CategoriesGrid
+              products={selected.products}
+              isLoading={isLoading}
+              isError={isError}
+              onRetry={() => {
+                void refetch();
+              }}
+            />
+            {!isLoading && !isError && (
+              <Pagination {...selected} onChange={setPage} />
+            )}
+          </div>
         </div>
       </main>
-
       <Footer />
     </div>
   );

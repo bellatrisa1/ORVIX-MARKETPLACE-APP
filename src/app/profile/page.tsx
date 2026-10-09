@@ -5,9 +5,11 @@ import Header from '@/components/Header';
 import TopBar from '@/components/TopBar';
 import Footer from '@/components/Footer';
 import { useStore } from '@/store';
+import OrderHistory from '@/components/OrderHistory';
 
 export default function ProfilePage() {
-  const { user, isLoggedIn, login, logout } = useStore();
+  const { user, isLoggedIn, login, logout, hydrated, storageReady } =
+    useStore();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -18,7 +20,7 @@ export default function ProfilePage() {
     const success = login({ email, password });
     if (!success) {
       setError(
-        'Неверный email или пароль. Попробуйте demo@orvix.com / demo123'
+        'Неверный email или пароль. Попробуйте demo@orvix.com / demo123',
       );
     }
   };
@@ -56,49 +58,6 @@ export default function ProfilePage() {
                   Выйти
                 </button>
               </div>
-
-              <div className="profile__orders">
-                <h3 className="profile__orders-title">Мои заказы</h3>
-
-                {user.orders.length === 0 ? (
-                  <div className="profile__empty">
-                    <p>У вас пока нет заказов</p>
-                  </div>
-                ) : (
-                  <div className="orders-list">
-                    {user.orders.map((order) => (
-                      <div key={order.id} className="order-card">
-                        <div className="order-card__head">
-                          <span className="order-card__id">
-                            Заказ #{order.id}
-                          </span>
-                          <span
-                            className={`order-card__status order-card__status--${order.status === 'Доставлен' ? 'done' : 'process'}`}
-                          >
-                            {order.status}
-                          </span>
-                        </div>
-
-                        <p className="order-card__date">{order.date}</p>
-
-                        <div className="order-card__items">
-                          {order.items.map((item, idx) => (
-                            <div key={idx} className="order-card__item">
-                              <span>{item.title}</span>
-                              <span>x{item.quantity}</span>
-                              <span>{item.price} ₽</span>
-                            </div>
-                          ))}
-                        </div>
-
-                        <div className="order-card__total">
-                          Итого: {order.total} ₽
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
             </div>
           ) : (
             <div className="auth">
@@ -110,6 +69,8 @@ export default function ProfilePage() {
                     className="auth__input"
                     type="email"
                     placeholder="Email"
+                    aria-label="Email"
+                    autoComplete="username"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                   />
@@ -118,6 +79,8 @@ export default function ProfilePage() {
                     className="auth__input"
                     type="password"
                     placeholder="Пароль"
+                    aria-label="Пароль"
+                    autoComplete="current-password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     onKeyDown={(e) => e.key === 'Enter' && handleLogin()}
@@ -125,7 +88,11 @@ export default function ProfilePage() {
 
                   {error && <p className="auth__error">{error}</p>}
 
-                  <button className="auth__button" onClick={handleLogin}>
+                  <button
+                    className="auth__button"
+                    disabled={!hydrated || !storageReady}
+                    onClick={handleLogin}
+                  >
                     Войти
                   </button>
 
@@ -136,6 +103,7 @@ export default function ProfilePage() {
               </div>
             </div>
           )}
+          <OrderHistory />
         </div>
       </main>
 

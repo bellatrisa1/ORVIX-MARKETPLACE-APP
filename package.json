@@ -9,7 +9,10 @@
     "lint": "eslint",
     "test": "vitest",
     "test:ui": "vitest --ui",
-    "test:coverage": "vitest --coverage"
+    "test:coverage": "vitest --coverage",
+    "test:e2e": "playwright test",
+    "typecheck": "tsc --noEmit",
+    "build:webpack": "next build --webpack"
   },
   "dependencies": {
     "@tanstack/react-query": "^5.90.21",
@@ -20,6 +23,7 @@
     "zustand": "^5.0.11"
   },
   "devDependencies": {
+    "@playwright/test": "^1.64.0",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
     "@types/node": "^20.19.40",

@@ -1,11 +1,14 @@
-"use client";
+'use client';
 
-import Link from "next/link";
+import Link from 'next/link';
+import type { RefObject } from 'react';
 
 interface CatalogMenuProps {
   isOpen: boolean;
   activeCategory: string;
   onCategoryChange: (category: string) => void;
+  menuRef: RefObject<HTMLDivElement | null>;
+  onClose: () => void;
 }
 
 const catalogData: Record<
@@ -13,52 +16,52 @@ const catalogData: Record<
   { slug: string; items: { label: string; slug: string }[] }
 > = {
   Электроника: {
-    slug: "smartphones",
+    slug: 'smartphones',
     items: [
-      { label: "Смартфоны", slug: "smartphones" },
-      { label: "Ноутбуки", slug: "laptops" },
-      { label: "Планшеты", slug: "tablets" },
-      { label: "Аксессуары", slug: "mobile-accessories" },
+      { label: 'Смартфоны', slug: 'smartphones' },
+      { label: 'Ноутбуки', slug: 'laptops' },
+      { label: 'Планшеты', slug: 'tablets' },
+      { label: 'Аксессуары', slug: 'mobile-accessories' },
     ],
   },
-  "Одежда и обувь": {
-    slug: "mens-shirts",
+  'Одежда и обувь': {
+    slug: 'mens-shirts',
     items: [
-      { label: "Мужские рубашки", slug: "mens-shirts" },
-      { label: "Женские платья", slug: "womens-dresses" },
-      { label: "Женские сумки", slug: "womens-bags" },
-      { label: "Женская обувь", slug: "womens-shoes" },
-      { label: "Мужская обувь", slug: "mens-shoes" },
-      { label: "Украшения", slug: "womens-jewellery" },
-      { label: "Очки", slug: "sunglasses" },
-      { label: "Топы", slug: "tops" },
+      { label: 'Мужские рубашки', slug: 'mens-shirts' },
+      { label: 'Женские платья', slug: 'womens-dresses' },
+      { label: 'Женские сумки', slug: 'womens-bags' },
+      { label: 'Женская обувь', slug: 'womens-shoes' },
+      { label: 'Мужская обувь', slug: 'mens-shoes' },
+      { label: 'Украшения', slug: 'womens-jewellery' },
+      { label: 'Очки', slug: 'sunglasses' },
+      { label: 'Топы', slug: 'tops' },
     ],
   },
-  "Дом и интерьер": {
-    slug: "furniture",
+  'Дом и интерьер': {
+    slug: 'furniture',
     items: [
-      { label: "Мебель", slug: "furniture" },
-      { label: "Декор", slug: "home-decoration" },
-      { label: "Кухонные аксессуары", slug: "kitchen-accessories" },
+      { label: 'Мебель', slug: 'furniture' },
+      { label: 'Декор', slug: 'home-decoration' },
+      { label: 'Кухонные аксессуары', slug: 'kitchen-accessories' },
     ],
   },
   Красота: {
-    slug: "beauty",
+    slug: 'beauty',
     items: [
-      { label: "Beauty", slug: "beauty" },
-      { label: "Fragrances", slug: "fragrances" },
-      { label: "Skin Care", slug: "skin-care" },
+      { label: 'Beauty', slug: 'beauty' },
+      { label: 'Fragrances', slug: 'fragrances' },
+      { label: 'Skin Care', slug: 'skin-care' },
     ],
   },
   Продукты: {
-    slug: "groceries",
-    items: [{ label: "Groceries", slug: "groceries" }],
+    slug: 'groceries',
+    items: [{ label: 'Groceries', slug: 'groceries' }],
   },
-  "Спорт и авто": {
-    slug: "sports-accessories",
+  'Спорт и авто': {
+    slug: 'sports-accessories',
     items: [
-      { label: "Спортивные аксессуары", slug: "sports-accessories" },
-      { label: "Транспорт", slug: "vehicle" },
+      { label: 'Спортивные аксессуары', slug: 'sports-accessories' },
+      { label: 'Транспорт', slug: 'vehicle' },
     ],
   },
 };
@@ -67,6 +70,8 @@ export default function CatalogMenu({
   isOpen,
   activeCategory,
   onCategoryChange,
+  menuRef,
+  onClose,
 }: CatalogMenuProps) {
   if (!isOpen) return null;
 
@@ -74,7 +79,37 @@ export default function CatalogMenu({
   const active = catalogData[activeCategory];
 
   return (
-    <div className="catalog-menu">
+    <div
+      className="catalog-menu"
+      id="catalog-menu"
+      ref={menuRef}
+      role="dialog"
+      aria-label="Каталог и навигация"
+      tabIndex={-1}
+      onClick={(event) => {
+        if ((event.target as HTMLElement).closest('a')) onClose();
+      }}
+    >
+      <div className="catalog-menu__mobile-nav">
+        <nav aria-label="Навигация по сайту">
+          <Link href="/">Главная</Link>
+          <Link href="/ideas">Идеи</Link>
+          <Link href="/sales">Скидки</Link>
+          <Link href="/services">Услуги</Link>
+          <Link href="/mobile">Мобильное приложение</Link>
+          <Link href="/support">Поддержка</Link>
+          <Link href="/gift-cards">Подарочные карты</Link>
+          <Link href="/business">Для бизнеса</Link>
+        </nav>
+      </div>
+      <button
+        className="catalog-menu__close"
+        type="button"
+        aria-label="Закрыть каталог"
+        onClick={onClose}
+      >
+        ✕
+      </button>
       <div className="catalog-menu__sidebar">
         {categories.map((category) => (
           <button
@@ -82,9 +117,10 @@ export default function CatalogMenu({
             type="button"
             className={`catalog-menu__category ${
               activeCategory === category
-                ? "catalog-menu__category--active"
-                : ""
+                ? 'catalog-menu__category--active'
+                : ''
             }`}
+            aria-pressed={activeCategory === category}
             onMouseEnter={() => onCategoryChange(category)}
             onClick={() => onCategoryChange(category)}
           >

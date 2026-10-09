@@ -15,29 +15,29 @@ export default function GiftCardsPage() {
             <span className="demo-page__icon">🎁</span>
             <h1>Подарочные карты</h1>
             <p>
-              Подарите близким возможность выбрать то, что им действительно
-              нужно. Доступны электронные и физические карты.
+              Демонстрация номиналов: покупка и применение подарочных карт пока
+              недоступны.
             </p>
 
             <div className="gift-grid">
               <div className="gift-card">
-                <div className="gift-card__value">1 000 ₽</div>
+                <div className="gift-card__value">10 USD</div>
                 <p>Для небольшого подарка</p>
               </div>
 
               <div className="gift-card gift-card--popular">
                 <div className="gift-card__badge">Популярный</div>
-                <div className="gift-card__value">3 000 ₽</div>
+                <div className="gift-card__value">30 USD</div>
                 <p>Оптимальный выбор</p>
               </div>
 
               <div className="gift-card">
-                <div className="gift-card__value">5 000 ₽</div>
+                <div className="gift-card__value">50 USD</div>
                 <p>Для дорогих подарков</p>
               </div>
 
               <div className="gift-card">
-                <div className="gift-card__value">10 000 ₽</div>
+                <div className="gift-card__value">100 USD</div>
                 <p>Максимальный выбор</p>
               </div>
             </div>

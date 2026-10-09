@@ -15,15 +15,15 @@ export default function BusinessPage() {
             <span className="demo-page__icon">🏢</span>
             <h1>Для бизнеса</h1>
             <p>
-              Оптовые поставки, корпоративные заказы и специальные условия для
-              вашего бизнеса.
+              Планируемые возможности для бизнеса. Оптовые заказы, документы и
+              обслуживание пока не реализованы.
             </p>
 
             <div className="business-features">
               <div className="business-feature">
                 <span>📦</span>
                 <strong>Оптовые цены</strong>
-                <p>Скидки от 10 000 ₽</p>
+                <p>Оптовые условия в разработке</p>
               </div>
 
               <div className="business-feature">
